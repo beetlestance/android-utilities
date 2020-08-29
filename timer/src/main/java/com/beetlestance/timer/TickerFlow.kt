@@ -9,14 +9,14 @@ import kotlin.concurrent.schedule
 
 @ExperimentalCoroutinesApi
 fun tickerFlow(
-    period: Long,
-    initialDelay: Long = period
+    periodInMillis: Long,
+    initialDelayInMillis: Long = periodInMillis
 ): Flow<Unit> = callbackFlow {
-    require(period > 0)
-    require(initialDelay > -1)
+    require(periodInMillis > 0)
+    require(initialDelayInMillis > -1)
 
     val timer = Timer()
-    timer.schedule(initialDelay, period) {
+    timer.schedule(initialDelayInMillis, periodInMillis) {
         offer(Unit)
     }
 
