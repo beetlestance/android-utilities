@@ -1,56 +1,59 @@
 package com.beetlestance.countdown_timer
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import java.util.*
-import kotlin.concurrent.schedule
 
-class CountDownTimer(
+class PeriodicTimer(
     private val initialDelayInMillis: Long,
     private val periodInMillis: Long,
+    private val stopTimeInMillis: Long = 0,
     private val coroutineScope: CoroutineScope,
-    private val action: (time: Long, countDownTimer: CountDownTimer) -> Unit
+    private val action: (time: Long, countDownTimer: PeriodicTimer) -> Unit
 ) {
 
     private var currentExecutionCounter: Long = 0
     private var countDownTickerJob: Job? = null
 
     @ExperimentalCoroutinesApi
-    @Synchronized
-    fun start() {
-        cancel()
-        countDownTickerJob = tickerFlow(
+    private fun startNewCountdownJob() {
+        val tickerFlow = tickerFlow(
             period = periodInMillis,
             initialDelay = initialDelayInMillis
         ).onEach {
             onTick()
-        }.launchIn(coroutineScope)
+        }
 
+        countDownTickerJob = tickerFlow.launchIn(coroutineScope)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Synchronized
+    fun start() {
+        cancel()
+        startNewCountdownJob()
         countDownTickerJob?.start()
     }
 
-
     /**
-     * Cancel the timer without setting the current execution time to 0
+     * Cancels the timer without any callback
      */
     fun cancel() {
         cancelTimer()
-        currentExecutionCounter = 0
     }
 
     private fun cancelTimer() {
         if (countDownTickerJob?.isActive == true) {
             countDownTickerJob?.cancel()
         }
+        currentExecutionCounter = 0
     }
 
+    /**
+     * Cancels the timer with callback of execution time 0
+     */
     fun reset() {
         cancelTimer()
-        currentExecutionCounter = 0
         action(0, this)
     }
 
@@ -61,10 +64,15 @@ class CountDownTimer(
             periodInMillis * currentExecutionCounter
         }
 
+        if (stopTimeInMillis in 1 until executionTime) {
+            cancel()
+            return
+        }
+
         currentExecutionCounter += 1
 
         withContext(Dispatchers.Main) {
-            action(executionTime, this@CountDownTimer)
+            action(executionTime, this@PeriodicTimer)
         }
     }
 

@@ -1,26 +1,25 @@
 package com.beetlestance.androidutilitiessamples
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.beetlestance.androidutilitiessamples.databinding.ActivityCountdownTimerBinding
-import com.beetlestance.countdown_timer.CountDownTimer
+import com.beetlestance.countdown_timer.PeriodicTimer
 
 class CountDownTimerActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityCountdownTimerBinding
-    private val timerToRun: Long = 10000
+    private val stopTimeInMillis = 45000L
 
-    private val countDownTimer = CountDownTimer(
+    private val periodicTimer = PeriodicTimer(
         initialDelayInMillis = 0,
         periodInMillis = 1000,
+        stopTimeInMillis = 45000,
         coroutineScope = lifecycleScope
-    ) { time, countDownTimer ->
-        if (time > timerToRun) {
-            countDownTimer.cancel()
-        } else {
-            binding.activityCountdownTimerDisplay.text = (timerToRun - time).toString()
-        }
+    ) { time, _ ->
+        Log.d("Time", "$time")
+        binding.activityCountdownTimerDisplay.text = (stopTimeInMillis - time).toString()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,15 +28,15 @@ class CountDownTimerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.activityCountdownTimerCancel.setOnClickListener {
-            countDownTimer.cancel()
+            periodicTimer.cancel()
         }
 
         binding.activityCountdownTimerReset.setOnClickListener {
-            countDownTimer.reset()
+            periodicTimer.reset()
         }
 
         binding.activityCountdownTimerStart.setOnClickListener {
-            countDownTimer.start()
+            periodicTimer.start()
         }
     }
 }
