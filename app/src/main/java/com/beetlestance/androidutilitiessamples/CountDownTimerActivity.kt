@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.beetlestance.androidutilitiessamples.databinding.ActivityCountdownTimerBinding
-import com.beetlestance.countdown_timer.PeriodicTimer
+import com.beetlestance.timer.PeriodicTimer
 
 class CountDownTimerActivity : AppCompatActivity() {
 

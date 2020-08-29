@@ -1,4 +1,4 @@
-package com.beetlestance.countdown_timer
+package com.beetlestance.timer
 
 import org.junit.Test
 

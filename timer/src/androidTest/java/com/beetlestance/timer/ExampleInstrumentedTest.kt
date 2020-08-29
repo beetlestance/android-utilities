@@ -1,4 +1,4 @@
-package com.beetlestance.countdown_timer
+package com.beetlestance.timer
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
