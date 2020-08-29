@@ -68,19 +68,4 @@ class CountDownTimer(
         }
     }
 
-    @ExperimentalCoroutinesApi
-    private fun tickerFlow(
-        period: Long,
-        initialDelay: Long = period
-    ): Flow<Unit> = callbackFlow {
-        require(period > 0)
-        require(initialDelay > -1)
-
-        val timer = Timer()
-        timer.schedule(initialDelay, period) {
-            offer(Unit)
-        }
-
-        awaitClose { timer.cancel() }
-    }
 }
