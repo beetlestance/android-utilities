@@ -1,7 +1,6 @@
 package com.beetlestance.androidutilitiessamples
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.beetlestance.androidutilitiessamples.databinding.ActivityCountdownTimerBinding
@@ -18,7 +17,6 @@ class CountDownTimerActivity : AppCompatActivity() {
         stopTimeInMillis = 45000,
         coroutineScope = lifecycleScope
     ) { time, _ ->
-        Log.d("Time", "$time")
         binding.activityCountdownTimerDisplay.text = (stopTimeInMillis - time).toString()
     }
 
